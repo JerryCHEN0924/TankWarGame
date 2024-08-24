@@ -21,11 +21,11 @@ public class GameClient extends JComponent {
 
     private List<Wall> walls;
 
-    public List<Wall> getWalls() {
+    List<Wall> getWalls() {
         return walls;
     }
 
-    public List<Tank> getEnemyTanks() {
+    List<Tank> getEnemyTanks() {
         return enemyTanks;
     }
 
@@ -84,6 +84,7 @@ public class GameClient extends JComponent {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
+        //noinspection InfiniteLoopStatement
         while (true) {
             client.repaint();
             try {
