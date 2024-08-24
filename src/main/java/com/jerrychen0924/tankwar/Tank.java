@@ -126,6 +126,12 @@ public class Tank {
     void draw(Graphics graphics) {
         this.determineDirection();
         this.move();
+        //加入四面範圍，限制坦克移動不能超出邊界。
+        if (x < 0) x = 0;
+        else if (x > 800 - getImage().getWidth(null)) x = 800 - getImage().getWidth(null);
+        if (y < 0) y = 0;
+        else if (y > 600 - getImage().getHeight(null)) y = 600 - getImage().getHeight(null);
+        
         graphics.drawImage(this.getImage(), this.getX(), this.getY(), null);
     }
 
