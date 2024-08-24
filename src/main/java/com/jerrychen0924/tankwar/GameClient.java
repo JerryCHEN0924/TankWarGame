@@ -9,10 +9,25 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GameClient extends JComponent {
+    //單例模式(Singleton)-餓漢式（Eager Initialization）-在loading到此類初始化時就建立(實例化)。
+    private static final GameClient INSTANCE = new GameClient();
+
+    public static GameClient getInstance(){
+        return INSTANCE;
+    }
 
     private Tank playerTank;
     private List<Tank> enemyTanks;
+
     private List<Wall> walls;
+
+    public List<Wall> getWalls() {
+        return walls;
+    }
+
+    public List<Tank> getEnemyTanks() {
+        return enemyTanks;
+    }
 
     //設定畫面大小
     private GameClient() {

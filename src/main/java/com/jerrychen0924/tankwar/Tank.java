@@ -124,15 +124,38 @@ public class Tank {
     }
 
     void draw(Graphics graphics) {
+        int oldX = x, oldY = y;
         this.determineDirection();
         this.move();
-        //加入四面範圍，限制坦克移動不能超出邊界。
+        //加入螢幕範圍碰撞檢定，限制坦克移動不能超出邊界。
         if (x < 0) x = 0;
         else if (x > 800 - getImage().getWidth(null)) x = 800 - getImage().getWidth(null);
         if (y < 0) y = 0;
         else if (y > 600 - getImage().getHeight(null)) y = 600 - getImage().getHeight(null);
-        
-        graphics.drawImage(this.getImage(), this.getX(), this.getY(), null);
+
+        //加入牆壁碰撞檢定，限制坦克不能穿牆。
+        Rectangle rec = this.getRectangle();
+        for (Wall wall : GameClient.getInstance().getWalls()) {
+            if (rec.intersects(wall.getRectangle())) {
+                x = oldX;
+                y = oldY;
+                break;
+            }
+        }
+        //加入敵方坦克碰撞檢定，限制坦克不能穿越敵方坦克。
+        for(Tank tank : GameClient.getInstance().getEnemyTanks()){
+            if (rec.intersects(tank.getRectangle())){
+                x = oldX;
+                y = oldY;
+                break;
+            }
+        }
+
+        graphics.drawImage(this.getImage(), this.x, this.y, null);
+    }
+
+    public Rectangle getRectangle() {
+        return new Rectangle(x, y, getImage().getWidth(null), getImage().getHeight(null));
     }
 
     public void keyPressed(KeyEvent e) {
