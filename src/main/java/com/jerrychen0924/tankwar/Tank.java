@@ -1,8 +1,12 @@
 package com.jerrychen0924.tankwar;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 class Tank {
 
@@ -164,8 +168,12 @@ class Tank {
     }
 
     private void fire() {
-        Missile missile = new Missile(x + getImage().getWidth(null) / 2, y + getImage().getHeight(null) / 2, enemy, direction);
+        Missile missile = new Missile(x + getImage().getWidth(null) / 2 - 6, y + getImage().getHeight(null) / 2 - 6, enemy, direction);
         GameClient.getInstance().getMissiles().add(missile);
+
+        Media sound = new Media(new File("assets/audios/shoot.wav").toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
     }
 
     void keyReleased(KeyEvent e) {

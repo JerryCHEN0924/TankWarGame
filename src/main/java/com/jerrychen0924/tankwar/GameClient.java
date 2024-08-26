@@ -1,5 +1,8 @@
 package com.jerrychen0924.tankwar;
 
+
+import com.sun.javafx.application.PlatformImpl;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -72,6 +75,8 @@ public class GameClient extends JComponent {
     }
 
     public static void main(String[] args) {
+
+        PlatformImpl.startup(() -> {});
         JFrame frame = new JFrame();
         frame.setTitle("坦克大戰遊戲-練習用");
         frame.setIconImage(new ImageIcon("assets/images/icon.png").getImage());
