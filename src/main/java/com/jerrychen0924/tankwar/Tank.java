@@ -47,7 +47,7 @@ class Tank {
         return null;
     }
 
-     private void move() {
+    private void move() {
         if (this.stopped) return;
         switch (direction) {
             case UP:
@@ -127,8 +127,8 @@ class Tank {
             }
         }
         //加入敵方坦克碰撞檢定，限制坦克不能穿越敵方坦克。
-        for(Tank tank : GameClient.getInstance().getEnemyTanks()){
-            if (rec.intersects(tank.getRectangle())){
+        for (Tank tank : GameClient.getInstance().getEnemyTanks()) {
+            if (rec.intersects(tank.getRectangle())) {
                 x = oldX;
                 y = oldY;
                 break;
@@ -156,8 +156,16 @@ class Tank {
             case KeyEvent.VK_RIGHT:
                 right = true;
                 break;
+            case KeyEvent.VK_CONTROL:
+                fire();
+                break;
         }
 
+    }
+
+    private void fire() {
+        Missile missile = new Missile(x + getImage().getWidth(null) / 2, y + getImage().getHeight(null) / 2, enemy, direction);
+        GameClient.getInstance().getMissiles().add(missile);
     }
 
     void keyReleased(KeyEvent e) {
