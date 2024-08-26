@@ -3,7 +3,6 @@ package com.jerrychen0924.tankwar;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -31,25 +30,7 @@ class Tank {
 
     Image getImage() {
         String prefix = enemy ? "e" : "";
-        switch (direction) {
-            case UP:
-                return Tools.getImage(prefix + "tankU.gif");
-            case UPLEFT:
-                return Tools.getImage(prefix + "tankLU.gif");
-            case UPRIGHT:
-                return Tools.getImage(prefix + "tankRU.gif");
-            case DOWN:
-                return Tools.getImage(prefix + "tankD.gif");
-            case DOWNLEFT:
-                return Tools.getImage(prefix + "tankLD.gif");
-            case DOWNRIGHT:
-                return Tools.getImage(prefix + "tankRD.gif");
-            case LEFT:
-                return Tools.getImage(prefix + "tankL.gif");
-            case RIGHT:
-                return Tools.getImage(prefix + "tankR.gif");
-        }
-        return null;
+        return direction.getImage(prefix+"tank");
     }
 
     private void move() {
@@ -59,12 +40,12 @@ class Tank {
                 y -= 5;
                 break;
 
-            case UPLEFT:
+            case LEFT_UP:
                 y -= 5;
                 x -= 5;
                 break;
 
-            case UPRIGHT:
+            case RIGHT_UP:
                 y -= 5;
                 x += 5;
                 break;
@@ -73,12 +54,12 @@ class Tank {
                 y += 5;
                 break;
 
-            case DOWNLEFT:
+            case LEFT_DOWN:
                 x -= 5;
                 y += 5;
                 break;
 
-            case DOWNRIGHT:
+            case RIGHT_DOWN:
                 x += 5;
                 y += 5;
                 break;
@@ -99,12 +80,12 @@ class Tank {
         if (!up && !right && !down && !left) {
             this.stopped = true;
         } else {
-            if (up && left && !down && !right) this.direction = Direction.UPLEFT;
-            else if (up && !left && !down && right) this.direction = Direction.UPRIGHT;
+            if (up && left && !down && !right) this.direction = Direction.LEFT_UP;
+            else if (up && !left && !down && right) this.direction = Direction.RIGHT_UP;
             else if (up && !left && !down && !right) this.direction = Direction.UP;
             else if (!up && !left && down && !right) this.direction = Direction.DOWN;
-            else if (!up && left && down && !right) this.direction = Direction.DOWNLEFT;
-            else if (!up && !left && down && right) this.direction = Direction.DOWNRIGHT;
+            else if (!up && left && down && !right) this.direction = Direction.LEFT_DOWN;
+            else if (!up && !left && down && right) this.direction = Direction.RIGHT_DOWN;
             else if (!up && left && !down && !right) this.direction = Direction.LEFT;
             else if (!up && !left && !down && right) this.direction = Direction.RIGHT;
             this.stopped = false;
@@ -176,18 +157,20 @@ class Tank {
             Missile missile = new Missile(x + getImage().getWidth(null) / 2 - 6, y + getImage().getHeight(null) / 2 - 6, enemy, direction);
             GameClient.getInstance().getMissiles().add(missile);
         }
-        String audioFile = new Random().nextBoolean() ? "supershoot.aiff" : "supershoot.wav";
-        Media sound = new Media(new File("assets/audios/" + audioFile).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();
 
+        String audioFile = new Random().nextBoolean() ? "supershoot.aiff" : "supershoot.wav";
+        playAudio(audioFile);
     }
 
     private void fire() {
         Missile missile = new Missile(x + getImage().getWidth(null) / 2 - 6, y + getImage().getHeight(null) / 2 - 6, enemy, direction);
         GameClient.getInstance().getMissiles().add(missile);
 
-        Media sound = new Media(new File("assets/audios/shoot.wav").toURI().toString());
+        playAudio("shoot.wav");
+    }
+
+    private static void playAudio(String fileName) {
+        Media sound = new Media(new File("assets/audios/" + fileName).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.play();
     }
