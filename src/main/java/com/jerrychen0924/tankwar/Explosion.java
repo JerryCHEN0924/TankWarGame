@@ -2,13 +2,13 @@ package com.jerrychen0924.tankwar;
 
 import java.awt.*;
 
-class Explostion {
+class Explosion {
 
     private int x, y;
     private int step = 0;
     private boolean live = true;
 
-    Explostion(int x, int y) {
+    Explosion(int x, int y) {
         this.x = x;
         this.y = y;
     }

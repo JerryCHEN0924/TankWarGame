@@ -14,6 +14,8 @@ class Tank {
     private boolean enemy;
     private boolean live = true;
     private int hp = 100;
+    private final Random random = new Random();
+    private int step = random.nextInt(12) + 3;
 
     Tank(int x, int y, Direction direction) {
         this(x, y, false, direction);
@@ -74,7 +76,9 @@ class Tank {
 
     void draw(Graphics graphics) {
         int oldX = x, oldY = y;
-        this.determineDirection();
+        if(!this.enemy){
+            this.determineDirection();
+        }
         this.move();
         //加入螢幕範圍碰撞檢定，限制坦克移動不能超出邊界。
         if (x < 0) x = 0;
@@ -93,11 +97,24 @@ class Tank {
         }
         //加入敵方坦克碰撞檢定，限制坦克不能穿越敵方坦克。
         for (Tank tank : GameClient.getInstance().getEnemyTanks()) {
-            if (rec.intersects(tank.getRectangle())) {
+            if (tank != this && rec.intersects(tank.getRectangle())) {
                 x = oldX;
                 y = oldY;
                 break;
             }
+        }
+        if(this.enemy && rec.intersects(GameClient.getInstance().getPlayerTank().getRectangle())){
+            x = oldX;
+            y = oldY;
+        }
+
+        if (!enemy){
+            graphics.setColor(Color.WHITE);
+            graphics.fillRect(x,y-10,this.getImage().getWidth(null),10);
+
+            graphics.setColor(Color.RED);
+            int width = hp * getImage().getWidth(null) / 100;
+            graphics.fillRect(x,y-10,width,10);
         }
 
         graphics.drawImage(this.getImage(), this.x, this.y, null);
@@ -127,8 +144,11 @@ class Tank {
             case KeyEvent.VK_A:
                 superFire();
                 break;
+            case KeyEvent.VK_F2:
+                GameClient.getInstance().restart();
+                break;
         }
-
+        this.determineDirection();
     }
 
     private void superFire() {
@@ -165,5 +185,18 @@ class Tank {
         }
         this.determineDirection();
         this.move();
+    }
+
+
+    void actRandomly() {
+        Direction[] dir = Direction.values();
+        if (step == 0) {
+            step = random.nextInt(12) + 3;
+            this.direction = dir[random.nextInt(dir.length)];
+            if ((random.nextBoolean())) {
+                this.fire();
+            }
+        }
+        step--;
     }
 }
