@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 
 class Tank {
-
     private static final int MOVE_SPEED = 5;
     private static final int DISTANCE_TO_PET = 4;
     private static final int MAX_HP = 100;
@@ -21,6 +20,10 @@ class Tank {
 
     Tank(int x, int y, Direction direction) {
         this(x, y, false, direction);
+    }
+
+    Tank(Save.Position position, boolean enemy) {
+        this(position.getX(), position.getY(), enemy, position.getDirection());
     }
 
     Tank(int x, int y, boolean enemy, Direction direction) {
@@ -87,10 +90,16 @@ class Tank {
         }
         this.move();
         //加入螢幕範圍碰撞檢定，限制坦克移動不能超出邊界。
-        if (x < 0) x = 0;
-        else if (x > 800 - getImage().getWidth(null)) x = 800 - getImage().getWidth(null);
-        if (y < 0) y = 0;
-        else if (y > 600 - getImage().getHeight(null)) y = 600 - getImage().getHeight(null);
+        if (x < 0) {
+            x = 0;
+        } else if (x > GameClient.WIDTH - getImage().getWidth(null)) {
+            x = GameClient.WIDTH - getImage().getWidth(null);
+        }
+        if (y < 0) {
+            y = 0;
+        } else if (y > GameClient.HEIGHT - getImage().getHeight(null)) {
+            y = GameClient.HEIGHT - getImage().getHeight(null);
+        }
 
         //加入牆壁碰撞檢定，限制坦克不能穿牆。
         Rectangle rec = this.getRectangle();
@@ -214,6 +223,9 @@ class Tank {
         this.move();
     }
 
+    Save.Position getPosition() {
+        return new Save.Position(x, y, direction);
+    }
 
     void actRandomly() {
         Direction[] dir = Direction.values();
