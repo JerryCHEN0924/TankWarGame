@@ -16,7 +16,8 @@ class Tank {
     private Direction direction;
     private boolean up, down, left, right;
     private boolean enemy;
-
+    private boolean live = true;
+    private int hp = 100;
 
     Tank(int x, int y, Direction direction) {
         this(x, y, false, direction);
@@ -27,6 +28,22 @@ class Tank {
         this.y = y;
         this.enemy = enemy;
         this.direction = direction;
+    }
+
+    boolean isLive() {
+        return live;
+    }
+
+    void setLive(boolean live) {
+        this.live = live;
+    }
+
+    int getHp() {
+        return hp;
+    }
+
+    void setHp(int hp) {
+        this.hp = hp;
     }
 
     Image getImage() {
@@ -90,7 +107,7 @@ class Tank {
         graphics.drawImage(this.getImage(), this.x, this.y, null);
     }
 
-    private Rectangle getRectangle() {
+    Rectangle getRectangle() {
         return new Rectangle(x, y, getImage().getWidth(null), getImage().getHeight(null));
     }
 
