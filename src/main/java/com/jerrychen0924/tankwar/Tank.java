@@ -6,14 +6,16 @@ import java.util.Random;
 
 class Tank {
 
-    public static final int MOVE_SPEED = 5;
+    private static final int MOVE_SPEED = 5;
+    private static final int DISTANCE_TO_PET = 4;
+    private static final int MAX_HP = 100;
     private int x;
     private int y;
     private Direction direction;
     private boolean up, down, left, right;
     private boolean enemy;
     private boolean live = true;
-    private int hp = 100;
+    private int hp = MAX_HP;
     private final Random random = new Random();
     private int step = random.nextInt(12) + 3;
 
@@ -55,6 +57,10 @@ class Tank {
         y += direction.yFactor * MOVE_SPEED;
     }
 
+    boolean isDying() {
+        return this.hp <= MAX_HP * 0.2;
+    }
+
     private boolean stopped;
 
     private void determineDirection() {
@@ -76,7 +82,7 @@ class Tank {
 
     void draw(Graphics graphics) {
         int oldX = x, oldY = y;
-        if(!this.enemy){
+        if (!this.enemy) {
             this.determineDirection();
         }
         this.move();
@@ -103,24 +109,45 @@ class Tank {
                 break;
             }
         }
-        if(this.enemy && rec.intersects(GameClient.getInstance().getPlayerTank().getRectangle())){
+        if (this.enemy && rec.intersects(GameClient.getInstance().getPlayerTank().getRectangle())) {
             x = oldX;
             y = oldY;
         }
 
-        if (!enemy){
+        if (!enemy) {
+            Blood blood = GameClient.getInstance().getBlood();
+            if (this.getRectangle().intersects(GameClient.getInstance().getBlood().getRectangle())) {
+                this.hp = MAX_HP;
+                Tools.playAudio("revive.wav");
+                blood.setLive(false);
+            }
             graphics.setColor(Color.WHITE);
-            graphics.fillRect(x,y-10,this.getImage().getWidth(null),10);
+            graphics.fillRect(x, y - 10, this.getImage().getWidth(null), 10);
 
+            //我方坦克血量
             graphics.setColor(Color.RED);
-            int width = hp * getImage().getWidth(null) / 100;
-            graphics.fillRect(x,y-10,width,10);
+            int width = hp * getImage().getWidth(null) / MAX_HP;
+            graphics.fillRect(x, y - 10, width, 10);
+
+            //我方坦克寵物
+            Image petImage = Tools.getImage("pet-camel.gif");
+            graphics.drawImage(petImage, this.x - petImage.getWidth(null) - DISTANCE_TO_PET, this.y, null);
         }
 
         graphics.drawImage(this.getImage(), this.x, this.y, null);
     }
 
     Rectangle getRectangle() {
+        if (enemy) {
+            return new Rectangle(x, y, getImage().getWidth(null), getImage().getHeight(null));
+        } else {
+            Image petImage = Tools.getImage("pet-camel.gif");
+            int delta = petImage.getWidth(null) + DISTANCE_TO_PET;
+            return new Rectangle(x - delta, y, getImage().getWidth(null) + delta, getImage().getHeight(null));
+        }
+    }
+
+    Rectangle getRectangleForHitDetection() {
         return new Rectangle(x, y, getImage().getWidth(null), getImage().getHeight(null));
     }
 
