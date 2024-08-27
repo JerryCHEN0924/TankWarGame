@@ -26,7 +26,7 @@ public class GameClient extends JComponent {
     //單例模式(Singleton)-餓漢式（Eager Initialization）-在loading到此類初始化時就建立(實例化)。
     private static final GameClient INSTANCE = new GameClient();
 
-    static final int WIDTH = 1366,HEIGHT = 768;
+    static final int WIDTH = 800,HEIGHT = 600;
     public static final Random RANDOM = new Random();
     public static final String GAME_SAVE = "game.sav";
 
