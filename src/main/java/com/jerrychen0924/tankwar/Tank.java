@@ -11,12 +11,12 @@ class Tank {
     private int x;
     private int y;
     private Direction direction;
-    private boolean up, down, left, right;
     private boolean enemy;
     private boolean live = true;
     private int hp = MAX_HP;
     private final Random random = new Random();
     private int step = random.nextInt(12) + 3;
+    private int code;
 
     Tank(int x, int y, Direction direction) {
         this(x, y, false, direction);
@@ -67,27 +67,17 @@ class Tank {
     private boolean stopped;
 
     private void determineDirection() {
-        if (!up && !right && !down && !left) {
+        Direction newDirection = Direction.get(code);
+        if (newDirection == null) {
             this.stopped = true;
         } else {
-            if (up && left && !down && !right) this.direction = Direction.LEFT_UP;
-            else if (up && !left && !down && right) this.direction = Direction.RIGHT_UP;
-            else if (up && !left && !down && !right) this.direction = Direction.UP;
-            else if (!up && !left && down && !right) this.direction = Direction.DOWN;
-            else if (!up && left && down && !right) this.direction = Direction.LEFT_DOWN;
-            else if (!up && !left && down && right) this.direction = Direction.RIGHT_DOWN;
-            else if (!up && left && !down && !right) this.direction = Direction.LEFT;
-            else if (!up && !left && !down && right) this.direction = Direction.RIGHT;
+            this.direction = newDirection;
             this.stopped = false;
         }
-
     }
 
     void draw(Graphics graphics) {
         int oldX = x, oldY = y;
-        if (!this.enemy) {
-            this.determineDirection();
-        }
         this.move();
         //加入螢幕範圍碰撞檢定，限制坦克移動不能超出邊界。
         if (x < 0) {
@@ -163,16 +153,18 @@ class Tank {
     void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
-                up = true;
+                // |= 是"按位或", 兩個位運算符的複合賦值運算符。
+                //它將變數的值與指定的值進行按位或運算，然後將結果賦給該變數。
+                code |= Direction.UP.code;
                 break;
             case KeyEvent.VK_DOWN:
-                down = true;
+                code |= Direction.DOWN.code;
                 break;
             case KeyEvent.VK_LEFT:
-                left = true;
+                code |= Direction.LEFT.code;
                 break;
             case KeyEvent.VK_RIGHT:
-                right = true;
+                code |= Direction.RIGHT.code;
                 break;
             case KeyEvent.VK_CONTROL:
                 fire();
@@ -207,20 +199,21 @@ class Tank {
     void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
-                up = false;
+                // ^= 是"按位異或", 兩個位運算符的複合賦值運算符。
+                //它將變數的值與指定的值進行按位或運算，然後將結果賦給該變數。
+                code ^= Direction.UP.code;
                 break;
             case KeyEvent.VK_DOWN:
-                down = false;
+                code ^= Direction.DOWN.code;
                 break;
             case KeyEvent.VK_LEFT:
-                left = false;
+                code ^= Direction.LEFT.code;
                 break;
             case KeyEvent.VK_RIGHT:
-                right = false;
+                code ^= Direction.RIGHT.code;
                 break;
         }
         this.determineDirection();
-        this.move();
     }
 
     Save.Position getPosition() {
